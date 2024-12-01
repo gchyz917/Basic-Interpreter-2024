@@ -141,7 +141,7 @@ void Program::list() {
     }
     std::sort(subsourcelines.begin(),subsourcelines.end());
     for(int i=0;i<subsourcelines.size();i++){
-        std::cout<<subsourcelines[i]<<" "<<sourcelines[subsourcelines[i]]<<std::endl;
+        std::cout<<sourcelines[subsourcelines[i]]<<std::endl;
     }
 }
 
