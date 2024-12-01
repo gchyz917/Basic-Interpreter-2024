@@ -98,7 +98,7 @@ private:
     std::vector<Expression*>expressions_;
 public:
     printthings(const std::vector<Expression*>& exprs);
-    ~printthings();
+    virtual ~printthings();
     virtual void execute(EvalState &state, Program &program);
 };
 //Input子类
@@ -117,7 +117,7 @@ private:
     Statement* then;//分支语句
 public:
     IFStatement(Expression* conditions,Statement* thenthings);
-    ~IFStatement() ;
+    virtual ~IFStatement() ;
     virtual void execute(EvalState &state, Program &program);
 };
 //GOTO语句
