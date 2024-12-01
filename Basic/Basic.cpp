@@ -66,8 +66,10 @@ void processLine(std::string line, Program &program, EvalState &state) {
     if (scanner.getTokenType(token) == NUMBER) {
         // 如果是行号，跳过它解析指令
         linenumbers = stringToInteger(token); // 当前代码行行号
-        program.addSourceLine(linenumbers,line);
-        token = scanner.nextToken();
+        if(scanner.hasMoreTokens()) {
+            program.addSourceLine(linenumbers,line);
+            token = scanner.nextToken();
+        }
         // 直接看下一个切片
     }
 
