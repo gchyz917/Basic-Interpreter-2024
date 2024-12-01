@@ -165,6 +165,7 @@ public:
     void gotoline(int linenumebr);
     void run(EvalState &states) ;
     void list();
+    bool isvalidnumber(int linenumber);
 
 private:
 
