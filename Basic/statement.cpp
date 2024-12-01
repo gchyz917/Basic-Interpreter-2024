@@ -46,6 +46,7 @@ printthings::~printthings() {
     expressions_.clear();
 }
 void printthings::execute(EvalState &state, Program &program) {
+    //std::cout << "Executing print statement" << std::endl;
     for(auto expr:expressions_) {
         if(expr!=nullptr) {
             int value=expr->eval(state);
@@ -70,7 +71,7 @@ void inputthings::execute(EvalState &state, Program &program) {
         state.setValue(varname, value); // 将值存储在 EvalState 中
     } catch (const std::exception& e) {
         // 如果转换失败，抛出一个 ErrorException
-        throw ErrorException("INVALID NUMBER");
+        error("INVALID NUMBER");
     }
 }
 
