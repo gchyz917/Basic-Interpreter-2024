@@ -63,7 +63,7 @@ void Program::setParsedStatement(int lineNumber, Statement *stmt) {
         delete parsedStatements[lineNumber];//清空内存
         parsedStatements[lineNumber]=stmt;//待定
     }else {
-        throw ErrorException("LINE NUMBER ERROR");
+        parsedStatements[lineNumber]=stmt;
     }
 }
 
@@ -120,11 +120,7 @@ int Program::getNextLineNumber(int lineNumber) {
 //more func to add
 //todo
 void Program::gotoline(int linenumber) {
-    if(sourcelines.find(linenumber)==sourcelines.end()) {
-        throw ErrorException("LINE NUMBER ERROR");
-    }else {
-        currentLineNumber=linenumber;
-    }
+    currentLineNumber=linenumber;
 }
 
 void Program::run(EvalState &states) {
@@ -139,7 +135,17 @@ void Program::run(EvalState &states) {
 }
 
 void Program::list() {
+    std::vector<int>subsourcelines;
     for(auto it:sourcelines) {
-        std::cout<<it.first<<" "<<it.second<<std::endl;
+        subsourcelines.push_back(it.first);
+    }
+    std::sort(subsourcelines.begin(),subsourcelines.end());
+    for(int i=0;i<subsourcelines.size();i++){
+        std::cout<<subsourcelines[i]<<" "<<sourcelines[subsourcelines[i]]<<std::endl;
     }
 }
+
+bool Program::isvalidnumber(int linenumber) {
+    return parsedStatements.find(linenumber)!=parsedStatements.end();
+}
+
