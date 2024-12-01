@@ -91,7 +91,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
             program.setParsedStatement(linenumbers, new printthings(expressions));
             Statement* printstate=new printthings(expressions);
             printstate->execute(state,program);
-            delete printstate;
+            //delete printstate;
         } else if (token == "INPUT") {
             std::string varname = scanner.nextToken();
             if (!state.isDefined(varname)) {
@@ -100,14 +100,14 @@ void processLine(std::string line, Program &program, EvalState &state) {
             program.setParsedStatement(linenumbers, new inputthings(varname));
             Statement* inputstate=new inputthings(varname);
             inputstate->execute(state,program);
-            delete inputstate;
+            //delete inputstate;
         } else if (token == "LET") {
             std::string varname = scanner.nextToken();
             Expression* expr = parseExp(scanner);
             program.setParsedStatement(linenumbers, new Assignment(varname, expr));
             Statement* letstate=new Assignment(varname, expr);
             letstate->execute(state,program);
-            delete letstate;
+            //delete letstate;
         } else if (token == "GOTO") {
             int gotolinenumber = stringToInteger(scanner.nextToken());
             if (!program.isvalidnumber(gotolinenumber)) {
@@ -116,7 +116,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
             program.setParsedStatement(linenumbers, new GOTOStatement(gotolinenumber));
             Statement* gotostate=new GOTOStatement(gotolinenumber);
             gotostate->execute(state,program);
-            delete gotostate;
+            //delete gotostate;
         } else if (token == "IF") {
             Expression* condition = parseExp(scanner);
             if (!scanner.hasMoreTokens() || scanner.nextToken()!= "THEN") {
@@ -138,7 +138,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
             program.setParsedStatement(linenumbers, new IFStatement(condition, thenstatement));
             Statement* ifstate=new IFStatement(condition, thenstatement);
             ifstate->execute(state,program);
-            delete ifstate;
+            //delete ifstate;
         } else if (token == "RUN") {
             program.run(state);
         } else if (token == "LIST") {
