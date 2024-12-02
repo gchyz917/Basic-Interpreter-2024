@@ -69,6 +69,8 @@ void processLine(std::string line, Program &program, EvalState &state) {
         if(scanner.hasMoreTokens()) {
             program.addSourceLine(linenumbers,line);
             token = scanner.nextToken();
+        }else {
+            program.removeSourceLine(linenumbers);
         }
         // 直接看下一个切片
     }
@@ -147,5 +149,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
         } else if (token == "CLEAR") {
             program.clear();
         }
+    }else if(scanner.getTokenType(token)==NUMBER) {
+        return;
     }
 }
