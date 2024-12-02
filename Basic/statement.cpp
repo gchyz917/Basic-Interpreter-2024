@@ -41,7 +41,7 @@ printthings::printthings(const std::vector<Expression*>& exprs):expressions_(exp
 }
 printthings::~printthings() {
     for(auto expr:expressions_) {
-        delete []expr;
+        delete expr;
     }
     expressions_.clear();
 }
@@ -84,8 +84,8 @@ IFStatement::IFStatement(Expression *conditions, Statement *thenthings) {
     this->then=thenthings;
 }
 IFStatement::~IFStatement() {
-    delete []condition;
-    delete []then;
+    delete condition;
+    delete then;
 }
 void IFStatement::execute(EvalState &state, Program &program) {
     if(condition->eval(state)!=0) {
