@@ -111,14 +111,15 @@ public:
     virtual void execute(EvalState &state, Program &program);
 };
 //If语句
-class IFStatement:public Statement {
-private:
-    Expression* condition;//条件语句
-    Statement* then;//分支语句
+class IFStatement : public Statement {
+    Expression *condition;
+    std::string cmp_;
+    Expression *exp2;
+    int thenLinenumber;
 public:
-    IFStatement(Expression* conditions,Statement* thenthings);
-    virtual ~IFStatement() ;
-    virtual void execute(EvalState &state, Program &program);
+    IFStatement(Expression *condition, std::string cmp, Expression *exp2, int thenLinenumber);
+    ~IFStatement();
+    void execute(EvalState &state, Program &program) override;
 };
 //GOTO语句
 class GOTOStatement:public Statement {
