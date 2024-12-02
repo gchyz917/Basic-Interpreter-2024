@@ -16,7 +16,12 @@
 
 Program::Program() = default;
 
-Program::~Program() = default;
+Program::~Program() {
+    for (auto& statement : parsedStatements) {
+        delete statement.second;
+    }
+    parsedStatements.clear();
+}
 
 void Program::clear() {
     // Replace this stub with your own code
@@ -40,7 +45,7 @@ void Program::removeSourceLine(int lineNumber) {
         sourcelines.erase(lineNumber);//从源代码中移除
     }
     if(parsedStatements.find(lineNumber)!=parsedStatements.end()) {
-        delete []parsedStatements[lineNumber];//清除相应内存
+        delete parsedStatements[lineNumber];//清除相应内存
         parsedStatements.erase(lineNumber);
     }
 }
@@ -60,7 +65,7 @@ void Program::setParsedStatement(int lineNumber, Statement *stmt) {
     // Replace this stub with your own code
     //todo
     if(parsedStatements.find(lineNumber)!=parsedStatements.end()) {
-        delete []parsedStatements[lineNumber];//清空内存
+        delete parsedStatements[lineNumber];//清空内存
         parsedStatements[lineNumber]=stmt;//待定
     }else {
         parsedStatements[lineNumber]=stmt;
