@@ -94,15 +94,14 @@ void processLine(std::string line, Program &program, EvalState &state) {
             //delete printstate;
         } else if (token == "INPUT") {
             std::string varname = scanner.nextToken();
-            if (!state.isDefined(varname)) {
-                error("VARIABLE NOT DEFINED");
-            }
+            scanner.saveToken(varname);
             program.setParsedStatement(linenumbers, new inputthings(varname));
             Statement* inputstate=new inputthings(varname);
             inputstate->execute(state,program);
             //delete inputstate;
         } else if (token == "LET") {
             std::string varname = scanner.nextToken();
+            scanner.saveToken(varname);
             Expression* expr = parseExp(scanner);
             program.setParsedStatement(linenumbers, new Assignment(varname, expr));
             Statement* letstate=new Assignment(varname, expr);
