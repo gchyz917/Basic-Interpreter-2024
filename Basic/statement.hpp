@@ -107,7 +107,7 @@ private:
     std::string varname;
 public:
     inputthings(const std::string variable);
-    //似乎没有什么需要析构
+    virtual ~inputthings();
     virtual void execute(EvalState &state, Program &program);
 };
 //If语句
@@ -126,7 +126,7 @@ private:
     int linenumber;//跳转的行号
 public:
     GOTOStatement(int number);
-    //似乎不需要析构
+    virtual ~GOTOStatement();
     virtual void execute(EvalState &state, Program &program);
 };
 /*
