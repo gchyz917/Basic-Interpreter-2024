@@ -28,7 +28,7 @@ Assignment::Assignment(const std::string &variable,Expression *expr) {
     this->expression=expr;
 }
 Assignment::~Assignment() {
-    delete expression;
+    delete []expression;
 }
 void Assignment::execute(EvalState &state, Program &program) {
     int value=expression->eval(state);
@@ -41,7 +41,7 @@ printthings::printthings(const std::vector<Expression*>& exprs):expressions_(exp
 }
 printthings::~printthings() {
     for(auto expr:expressions_) {
-        delete expr;
+        delete []expr;
     }
     expressions_.clear();
 }
@@ -65,13 +65,16 @@ inputthings::inputthings(const std::string variable) {
 }
 void inputthings::execute(EvalState &state, Program &program) {
     std::string input;
-    std::cin>>input;
-    try {
-        int value = stringToInteger(input); // 尝试将输入转换为整数
-        state.setValue(varname, value); // 将值存储在 EvalState 中
-    } catch (const std::exception& e) {
-        // 如果转换失败，抛出一个 ErrorException
-        error("INVALID NUMBER");
+    while(true) {
+        std::cout<<"? ";
+        std::cin>>input;
+        try {
+            int value=stringToInteger(input);
+            state.setValue(varname,value);
+            break;
+        }catch (const std::exception& e) {
+            std::cout<<"INVALID NUMBER"<<std::endl;
+        }
     }
 }
 
@@ -81,8 +84,8 @@ IFStatement::IFStatement(Expression *conditions, Statement *thenthings) {
     this->then=thenthings;
 }
 IFStatement::~IFStatement() {
-    delete condition;
-    delete then;
+    delete []condition;
+    delete []then;
 }
 void IFStatement::execute(EvalState &state, Program &program) {
     if(condition->eval(state)!=0) {
