@@ -60,8 +60,8 @@ inputthings::~inputthings()=default;
 void inputthings::execute(EvalState &state, Program &program) {
     std::string input;
     while(true) {
-        std::cout<<"? ";
-        std::cin>>input;
+        std::cout<<" ? ";
+        std::getline(std::cin,input,'\n');
         try {
             int value=stringToInteger(input);
             state.setValue(varname,value);
