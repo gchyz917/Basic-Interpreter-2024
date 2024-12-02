@@ -73,17 +73,25 @@ void inputthings::execute(EvalState &state, Program &program) {
 }
 
 //If语句
-IFStatement::IFStatement(Expression *conditions, Statement *thenthings) {
-    this->condition=conditions;
-    this->then=thenthings;
-}
-IFStatement::~IFStatement() =default;
-void IFStatement::execute(EvalState &state, Program &program) {
-    if(condition->eval(state)!=0) {
-        then->execute(state,program);
-    }
+IFStatement::IFStatement(Expression *condition, std::string cmp, Expression *exp2, int thenLinenumber)
+    : condition(condition), cmp_(cmp), exp2(exp2), thenLinenumber(thenLinenumber) {}
+
+IFStatement::~IFStatement() {
+    delete condition;
+    delete exp2;
 }
 
+void IFStatement::execute(EvalState &state, Program &program) {
+    int value1 = condition->eval(state);
+    int value2 = exp2->eval(state);
+    bool result = false;
+    if (cmp_ == "<") result = value1 < value2;
+    else if (cmp_ == ">") result = value1 > value2;
+    else if (cmp_ == "=") result = value1 == value2;
+    if (result) {
+        program.gotoline(thenLinenumber);
+    }
+}
 //GOTO语句
 GOTOStatement::GOTOStatement(int number) {
     this->linenumber=number;
