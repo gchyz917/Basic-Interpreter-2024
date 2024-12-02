@@ -15,7 +15,7 @@
 #include "Utils/tokenScanner.hpp"
 #include "Utils/strlib.hpp"
 #include "statement.hpp"
-
+#include<memory>
 /* Function prototypes */
 
 void processLine(std::string line, Program &program, EvalState &state);
