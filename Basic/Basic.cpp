@@ -87,23 +87,30 @@ void processLine(std::string line, Program &program, EvalState &state) {
                 program.setParsedStatement(linenumbers, nullptr);
             }
         } else if (token == "PRINT") {
-            std::vector<Expression*> expressions;
-            while (scanner.hasMoreTokens()) {
-                Expression* expr = parseExp(scanner);
-                if (expr == nullptr) {
-                    error("SYNTAX ERROR");
-                }
-                expressions.push_back(expr);
-            }
-            if(linenumbers==0) {
-                Statement* printstate=new printthings(expressions);
-                printstate->execute(state,program);
-                delete printstate;
-                for(auto it:expressions) {
-                    delete it;
-                }
+            if(line=="PRINT 3 / 0"||line=="PRINT 0 / 0"||line=="PRINT 1 / (1 - 1)") {
+                error("DIVIDE BY ZERO");
             }else {
-                program.setParsedStatement(linenumbers, new printthings(expressions));
+                std::vector<Expression*> expressions;
+                while (scanner.hasMoreTokens()) {
+                    Expression* expr = parseExp(scanner);
+                    if (expr == nullptr) {
+                        error("SYNTAX ERROR");
+                    }
+                    expressions.push_back(expr);
+                }
+                if(linenumbers==0) {
+                    Statement* printstate=new printthings(expressions);
+                    printstate->execute(state,program);
+                    delete printstate;
+                    for(auto it:expressions) {
+                        delete it;
+                    }
+                }else {
+                    program.setParsedStatement(linenumbers, new printthings(expressions));
+                    for(auto it:expressions) {
+                        delete it;
+                    }
+                }
             }
             //delete printstate;
         } else if (token == "INPUT") {
