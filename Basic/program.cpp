@@ -125,17 +125,27 @@ int Program::getNextLineNumber(int lineNumber) {
 //more func to add
 //todo
 void Program::gotoline(int linenumber) {
-    currentLineNumber=linenumber;
+    if (isvalidnumber(linenumber)) {
+        currentLineNumber = linenumber; // 更新当前行号
+    } else {
+        throw ErrorException("LINE NUMBER ERROR");
+    }
 }
 
 void Program::run(EvalState &states) {
-    currentLineNumber=getFirstLineNumber();
-    while(currentLineNumber!=-1) {
-        Statement* state=getParsedStatement(currentLineNumber);
-        if(state!=nullptr) {
-            state->execute(states,*this);
+    currentLineNumber = getFirstLineNumber();
+    while (currentLineNumber != -1) {
+        Statement* state = getParsedStatement(currentLineNumber);
+        if (state != nullptr) {
+            state->execute(states, *this);
+            // 如果当前行是 GOTO 语句，currentLineNumber 已经被更新
+            // 所以不需要再调用 getNextLineNumber
+            if (currentLineNumber == -1) { // 如果 GOTO 更新了行号为 -1，结束循环
+                break;
+            }
         }
-        currentLineNumber=getNextLineNumber(currentLineNumber);//执行下一行的指令
+        // 只有在没有 GOTO 的情况下才获取下一行
+        currentLineNumber = getNextLineNumber(currentLineNumber);
     }
 }
 
