@@ -13,6 +13,7 @@ Program::~Program() {
 void Program::clear() {
     sourcelines.clear(); // 清空存源代码的 unordered_map
     parsedStatements.clear(); // 清空存解析内容的 unordered_map
+
 }
 
 void Program::addSourceLine(int lineNumber, const std::string &line) {
@@ -115,11 +116,11 @@ void Program::run(EvalState &states) {
 
         // 检查目标行号是否有效
         if (!isvalidnumber(currentLineNumber)) {
-            throw ErrorException("LINE NUMBER ERROR: " + std::to_string(currentLineNumber));
+            throw ErrorException("LINE NUMBER ERROR");
         }
 
         // 获取下一行，避免跳转后继续从当前位置执行
-        currentLineNumber = getNextLineNumber(currentLineNumber);
+        currentLineNumber=getNextLineNumber(currentLineNumber);
     }
 }
 
