@@ -41,9 +41,10 @@ printthings::printthings(const std::vector<Expression*>& exprs):expressions_(exp
 }
 printthings::~printthings() {
     for(auto expr:expressions_) {
-        delete expr;
+        delete []expr;
     }
     expressions_.clear();
+    
 }
 void printthings::execute(EvalState &state, Program &program) {
     //std::cout << "Executing print statement" << std::endl;
