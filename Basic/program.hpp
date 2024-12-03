@@ -166,7 +166,7 @@ public:
     void run(EvalState &states);
     void list();
     bool isvalidnumber(int linenumber);
-
+    void end(int linenumber);
 
 private:
 
@@ -174,7 +174,7 @@ private:
     //todo
     int currentLineNumber;//当前代码行号
     EvalState evalstate;
-    bool endsignal=false;
+    std::unordered_map<int,bool> endsignal;
     //比如存一些数据结构，如unorderedmap
     std::unordered_map<int,std::string> sourcelines;//存储源代码行
     std::unordered_map<int,Statement*> parsedStatements;//存储解释过的语句
