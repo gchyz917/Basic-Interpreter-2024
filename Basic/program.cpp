@@ -102,14 +102,21 @@ void Program::run(EvalState &states) {
 
     // 遍历每一行执行
     while (currentLineNumber != -1) {
+        int original=currentLineNumber;
+        bool isgoto=false;
         Statement* state = getParsedStatement(currentLineNumber);
-
         if (state != nullptr) {
             state->execute(states, *this); // 执行语句
-
+            if(currentLineNumber!=original) {
+                isgoto=true;
+            }
             // 如果是 GOTO 或者 IF 跳转导致行号改变，不需要再次获取下一行
             if (currentLineNumber == -1) {
                 // 如果 GOTO 更新了行号为 -1，表示跳转到无效行，结束循环
+                break;
+            }
+        }else {
+            if(endsignal[currentLineNumber]) {
                 break;
             }
         }
@@ -120,7 +127,9 @@ void Program::run(EvalState &states) {
         }
 
         // 获取下一行，避免跳转后继续从当前位置执行
-        currentLineNumber=getNextLineNumber(currentLineNumber);
+        if(!isgoto){
+            currentLineNumber=getNextLineNumber(currentLineNumber);
+        }
     }
 }
 
@@ -138,4 +147,8 @@ void Program::list() {
 
 bool Program::isvalidnumber(int linenumber) {
     return parsedStatements.find(linenumber) != parsedStatements.end();
+}
+
+void Program::end(int linenumber) {
+    endsignal[linenumber]=true;
 }
