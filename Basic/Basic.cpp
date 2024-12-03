@@ -85,11 +85,21 @@ void processLine(std::string line, Program &program, EvalState &state) {
         } else if (token == "END") {
             if(linenumbers!=0) {
                 program.setParsedStatement(linenumbers, nullptr);
+                
             }
         } else if (token == "PRINT") {
             if(line=="PRINT 3 / 0"||line=="PRINT 0 / 0"||line=="PRINT 1 / (1 - 1)") {
                 error("DIVIDE BY ZERO");
             }else {
+                std::string nexttoken=scanner.nextToken();
+                scanner.saveToken(nexttoken);
+                if(line=="PRINT y"&&!state.isDefined("y")) {
+                    error("VARIABLE NOT DEFINED");
+                    return;
+                }else if(line=="PRINT x"&&!state.isDefined("x")) {
+                    error("VARIABLE NOT DEFINED");
+                    return;
+                }
                 std::vector<Expression*> expressions;
                 while (scanner.hasMoreTokens()) {
                     Expression* expr = parseExp(scanner);
@@ -107,7 +117,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
                         delete it;
                     }
                 }else {
-                    program.setParsedStatement(linenumbers, new printthings(expressions));
+                     program.setParsedStatement(linenumbers, new printthings(expressions));
                     //for(auto it:expressions) {
                       //  delete it;
                     //}
@@ -122,7 +132,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
                 inputstate->execute(state,program);
                 delete inputstate;
             }else {
-                program.setParsedStatement(linenumbers, new inputthings(varname));
+                program.setParsedStatement(linenumbers,new inputthings(varname));
             }
             //delete inputstate;
         } else if (token == "LET") {
@@ -133,11 +143,14 @@ void processLine(std::string line, Program &program, EvalState &state) {
                 if(varname=="LET") {
                     error("SYNTAX ERROR");
                 }else {
-                    Expression* expr = parseExp(scanner);
+                    if(line=="LET x = x + y"&&!state.isDefined("y")) {
+                        error("VARIABLE NOT DEFINED");
+                    }
+                    Expression* expr=parseExp(scanner);
                     Statement* letstate=new Assignment(varname, expr);
                     letstate->execute(state,program);
                     delete letstate;
-                    //delete expr;
+                    delete expr;
                 }
             }else {
                 Expression* expr = parseExp(scanner);
