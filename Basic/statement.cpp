@@ -73,13 +73,15 @@ void inputthings::execute(EvalState &state, Program &program) {
 }
 
 //If语句
-IFStatement::IFStatement(int lhs, std::string op,int rhs, int thenLinenumber)
-    : value1(lhs), op(op), value2(rhs), thenLinenumber(thenLinenumber) {}
+IFStatement::IFStatement(Expression* lhs, std::string op,Expression* rhs, int thenLinenumber)
+    : expr1(lhs), op(op), expr2(rhs), thenLinenumber(thenLinenumber) {}
 
 IFStatement::~IFStatement()=default;
 
 void IFStatement::execute(EvalState &state, Program &program) {
     bool result = false;
+    int value1=expr1->eval(state);
+    int value2=expr2->eval(state);
     if (op == "<") result = value1 < value2;
     else if (op == ">") result = value1 > value2;
     else if (op == "=") result = value1 == value2;
