@@ -44,6 +44,9 @@ std::string Program::getSourceLine(int lineNumber) {
 void Program::setParsedStatement(int lineNumber, Statement *stmt) {
     if (parsedStatements.find(lineNumber) != parsedStatements.end()) {
         //delete parsedStatements[lineNumber]; // 清空内存
+        if(parsedStatements[lineNumber]!=nullptr) {
+            delete parsedStatements[lineNumber];
+        }
         parsedStatements[lineNumber] = stmt; // 存储新的语句
     } else {
         parsedStatements[lineNumber] = stmt;
