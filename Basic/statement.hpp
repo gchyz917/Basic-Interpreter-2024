@@ -112,12 +112,12 @@ public:
 };
 //If语句
 class IFStatement : public Statement {
-    Expression *condition;
-    std::string cmp_;
+    Expression *exp1;
+    std::string op;
     Expression *exp2;
     int thenLinenumber;
 public:
-    IFStatement(Expression *condition, std::string cmp, Expression *exp2, int thenLinenumber);
+    IFStatement(Expression *exp1, std::string op, Expression *exp2, int thenLinenumber);
     ~IFStatement();
     void execute(EvalState &state, Program &program) override;
 };
