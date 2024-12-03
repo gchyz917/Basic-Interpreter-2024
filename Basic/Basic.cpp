@@ -85,7 +85,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
         } else if (token == "END") {
             if(linenumbers!=0) {
                 program.setParsedStatement(linenumbers, nullptr);
-                
+                program.end(linenumbers);
             }
         } else if (token == "PRINT") {
             if(line=="PRINT 3 / 0"||line=="PRINT 0 / 0"||line=="PRINT 1 / (1 - 1)") {
@@ -104,10 +104,12 @@ void processLine(std::string line, Program &program, EvalState &state) {
                 while (scanner.hasMoreTokens()) {
                     Expression* expr = parseExp(scanner);
                     if (expr == nullptr) {
+                        delete expr;
                         error("SYNTAX ERROR");
+                    }else {
+                        expressions.push_back(expr);
+                        //delete expr;
                     }
-                    expressions.push_back(expr);
-                    //delete expr;
                 }
                 if(linenumbers==0) {
                     Statement* printstate=new printthings(expressions);
@@ -162,10 +164,6 @@ void processLine(std::string line, Program &program, EvalState &state) {
             std::string targetLineToken = scanner.nextToken();
             int gotolinenumber = stringToInteger(targetLineToken);
 
-            if (!program.isvalidnumber(gotolinenumber)) {
-                error("LINE NUMBER ERROR");
-            }
-
             // Execute GOTO if no line number context is set
             if (linenumbers == 0) {
                 program.gotoline(gotolinenumber);
@@ -173,51 +171,32 @@ void processLine(std::string line, Program &program, EvalState &state) {
                 program.setParsedStatement(linenumbers, new GOTOStatement(gotolinenumber));
             }
         } else if (token == "IF") {
-            Expression* expr1 = parseExp(scanner);
-            if (expr1 == nullptr) {
+            if(!scanner.hasMoreTokens()) {
                 error("SYNTAX ERROR");
             }
-
-            // Get comparison operator
-            std::string op = scanner.nextToken();
-            if (op != "<" && op != ">" && op != "=") {
-                delete expr1;
-                error("SYNTAX ERROR");
-            }
-
-            // Get second expression
-            Expression* expr2 = parseExp(scanner);
-            if (expr2 == nullptr) {
-                delete expr1;
-                error("SYNTAX ERROR");
-            }
-
-            // Check for THEN keyword
-            std::string thenToken = scanner.nextToken();
-            if (thenToken != "THEN") {
-                delete expr1;
-                delete expr2;
-                error("SYNTAX ERROR");
-            }
-
-            // Get the line number to go to
-            std::string thennumbertoken = scanner.nextToken();
-            int thenLinenumber = stringToInteger(thennumbertoken);
-
-            // Evaluate the condition and potentially jump
-            if (expr1->eval(state) && expr2->eval(state)) {
-                if (op == "<" && expr1->eval(state) < expr2->eval(state)) {
-                    program.gotoline(thenLinenumber);
-                } else if (op == ">" && expr1->eval(state) > expr2->eval(state)) {
-                    program.gotoline(thenLinenumber);
-                } else if (op == "=" && expr1->eval(state) == expr2->eval(state)) {
-                    program.gotoline(thenLinenumber);
+            Expression* expr1 = readE(scanner);
+            Expression* lhs=((CompoundExp*)expr1)->getLHS();
+            int leftvalue=lhs->eval(state);
+            Expression* rhs=((CompoundExp*)expr1)->getRHS();
+            int rightvalue=rhs->eval(state);
+            std::string op=((CompoundExp*)expr1)->getOp();
+            if(op!=">"&&op!="<"&&op!="=") {
+                lhs=expr1;
+                rhs=readE(scanner);
+                if(scanner.hasMoreTokens()) {
+                    std::string thenlinenumber=scanner.nextToken();
+                    int thennumber=stringToInteger(thenlinenumber);
+                    program.setParsedStatement(linenumbers,new IFStatement(lhs,op,rhs,thennumber));
                 }
+            }else {
+                std::string nextthen=scanner.nextToken();
+                std::string thenlinenumber=scanner.nextToken();
+                int thennumber=stringToInteger(thenlinenumber);
+                program.setParsedStatement(linenumbers,new IFStatement(lhs,op,rhs,thennumber));
             }
-
-            // Clean up
-            delete expr1;
-            delete expr2;
+            //delete lhs;
+            //delete rhs;
+            //std::cout<<9;
         } else if (token == "RUN") {
             program.run(state);
         } else if (token == "LIST") {
