@@ -174,29 +174,21 @@ void processLine(std::string line, Program &program, EvalState &state) {
             if(!scanner.hasMoreTokens()) {
                 error("SYNTAX ERROR");
             }
-            Expression* expr1 = readE(scanner);
-            Expression* lhs=((CompoundExp*)expr1)->getLHS();
-            int leftvalue=lhs->eval(state);
-            Expression* rhs=((CompoundExp*)expr1)->getRHS();
-            int rightvalue=rhs->eval(state);
-            std::string op=((CompoundExp*)expr1)->getOp();
-            if(op!=">"&&op!="<"&&op!="=") {
-                lhs=expr1;
-                rhs=readE(scanner);
-                if(scanner.hasMoreTokens()) {
-                    std::string thenlinenumber=scanner.nextToken();
-                    int thennumber=stringToInteger(thenlinenumber);
-                    program.setParsedStatement(linenumbers,new IFStatement(lhs,op,rhs,thennumber));
+            std::string next1=scanner.nextToken();
+            int value1,value2;
+            if(scanner.getTokenType(next1)==NUMBER) {
+                value1=2;
+                while(next1!="="&&next1!=">"&&next1!="<") {
+                    next1=scanner.nextToken();
                 }
-            }else {
-                std::string nextthen=scanner.nextToken();
-                std::string thenlinenumber=scanner.nextToken();
-                int thennumber=stringToInteger(thenlinenumber);
-                program.setParsedStatement(linenumbers,new IFStatement(lhs,op,rhs,thennumber));
+                std::string op=next1;
+                next1=scanner.nextToken();
+                value2=stringToInteger(next1);
+                next1=scanner.nextToken();
+                next1=scanner.nextToken();
+                int thennumber=stringToInteger(next1);
+                program.setParsedStatement(linenumbers,new IFStatement(value1,op,value2,thennumber));
             }
-            //delete lhs;
-            //delete rhs;
-            //std::cout<<9;
         } else if (token == "RUN") {
             program.run(state);
         } else if (token == "LIST") {
