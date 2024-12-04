@@ -37,7 +37,11 @@ void Assignment::execute(EvalState &state, Program &program) {
 printthings::printthings(const std::vector<Expression*>& exprs):expressions_(exprs) {
     this->expressions_=exprs;
 }
-printthings::~printthings()=default;
+printthings::~printthings() {
+    for(auto it:expressions_) {
+        delete it;
+    }
+}
 void printthings::execute(EvalState &state, Program &program) {
     //std::cout << "Executing print statement" << std::endl;
     for(auto expr:expressions_) {
