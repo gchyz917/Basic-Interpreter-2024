@@ -115,9 +115,9 @@ void processLine(std::string line, Program &program, EvalState &state) {
                     Statement* printstate=new printthings(expressions);
                     printstate->execute(state,program);
                     delete printstate;
-                    for(auto it:expressions) {
-                        delete it;
-                    }
+                    //for(auto it:expressions) {
+                      //  delete it;
+                    //}
                 }else {
                      program.setParsedStatement(linenumbers, new printthings(expressions));
                     //for(auto it:expressions) {
